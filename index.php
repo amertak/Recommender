@@ -1,4 +1,4 @@
-<?phpaasdasdasdasdasddasdasadasdsadasd
+<?php
 /*
 $mysqli = new mysqli("localhost", "recommender", "2^83:4*%*p3.!Y!.78~h", "recommender_db");
 if ($mysqli->connect_errno) {
