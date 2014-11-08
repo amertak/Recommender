@@ -1,11 +1,9 @@
-{* This is the welcome page, you can delete it *}
-
 {block content}
-<h1 n:block="title">Můj úžasný blog</h1>
+<h2>Náhodná hláška</h2>
 
-{foreach $quotes as $quote}
-<div class="post">
-    <div>{$quote->text}</div>
+<div class="well">
+    <p>{$text|noescape}</p>
+    <p>{$quote->comment|noescape}</p>
+    <strong>Skóre:</strong> {$quote->score}
 </div>
-{/foreach}
 {/block}
