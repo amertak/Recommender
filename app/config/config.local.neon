@@ -1,0 +1,9 @@
+parameters:
+
+
+database:
+	dsn: 'mysql:host=127.0.0.1;dbname=recommender_db'
+	user: recommender
+	password: 2^83:4*%*p3.!Y!.78~h
+	options:
+		lazy: yes

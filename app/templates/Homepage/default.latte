@@ -1,0 +1,11 @@
+{* This is the welcome page, you can delete it *}
+
+{block content}
+<h1 n:block="title">Můj úžasný blog</h1>
+
+{foreach $quotes as $quote}
+<div class="post">
+    <div>{$quote->text}</div>
+</div>
+{/foreach}
+{/block}
