@@ -5,7 +5,6 @@ namespace App\Presenters;
 use Nette,
 	App\Model;
 
-
 /**
  * Homepage presenter.
  */
@@ -34,16 +33,16 @@ class HomepagePresenter extends BasePresenter
 
     private function prepareText($text)
     {
-        $text = preg_replace('/[^&lt;]&lt;\w+&gt;/', '<br />$0', $text);
+        $text = preg_replace('/(\d\d:\d\d:?\d?\d?)?[^&lt;]&lt;.*&gt;/', '<br />$0', $text);
 
-        if (preg_match_all('/&lt;(\w+)&gt;/', $text, $matches))
+        if (preg_match_all('/&lt;(.*)&gt;/', $text, $matches))
         {
             $count = 0;
             $matches = array_unique($matches[1]);
 
             foreach ($matches as $match)
             {
-                $text = preg_replace('/&lt;(' . $match . ')&gt;/', '&lt;<font color="' . $this->colors[$count % count($this->colors)] . '">$1</font>&gt;', $text);
+                $text = preg_replace('/&lt;(' . preg_quote($match) . ')&gt;/', '&lt;<font color="' . $this->colors[$count % count($this->colors)] . '">$1</font>&gt;', $text);
                 $count++;
             }
         }
@@ -55,5 +54,4 @@ class HomepagePresenter extends BasePresenter
     {
         $this->redirect('default');
     }
-
 }
