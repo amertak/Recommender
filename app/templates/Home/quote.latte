@@ -1,4 +1,3 @@
-
 {foreach $quotes as $quote}
     <div class="well">
         <a href="/quote/{$quote->id}">#{$quote->id}</a>
@@ -7,8 +6,8 @@
         <br />
         <p>{$quote->text|noescape}</p>
         <p>{$quote->comment|noescape}</p>
-        {foreach $quote->tags as $tag}
-            <span class="label label-primary">{$tag}</span>
+        {foreach $quote->categories as $category}
+            <a class="label label-primary" href="/category/{$category}">{$category}</a>
         {/foreach}
     </div>
     <br />

@@ -10,30 +10,35 @@ use Nette,
  */
 class HomePresenter extends BasePresenter
 {
-    /** @var Nette\Database\Context */
-    private $database;
     private $colors;
 
-    public function __construct(Nette\Database\Context $database)
+    public function __construct()
     {
-        $this->database = $database;
         $this->colors = ["#b92c28", "#2b669a", "#3e8f3e", "#e38d13", "#269abc"];
     }
 
+
 	public function renderDefault()
 	{
-        $quotes_db = $this->database->table('quotes')->order('RAND()')->limit(3);
-
+        $quotes_db = $this->database->table('quotes')->order('RAND()')->limit(1);
         $quotes = [];
 
         foreach ($quotes_db as $quote_db)
         {
+            $categories = [];
+            $categories_db = $this->database->table('categories')->where('quote', $quote_db->id);
+
+            foreach ($categories_db as $category_db)
+            {
+                array_push($categories, $category_db->category);
+            }
+
             $quote = new \Quote();
             $quote->text = $this->prepareText($quote_db->text);
             $quote->comment = $quote_db->comment;
-            $quote->tags = ['Tag1', 'Tag2'];
+            $quote->categories = $categories;
             $quote->id = $quote_db->id;
-            $quote->score = $quote_db->score;
+            $quote->score = $quote_db->tscore;
 
             array_push($quotes, $quote);
         }
@@ -58,9 +63,5 @@ class HomePresenter extends BasePresenter
         }
 
         return $text;
-    }
-
-    public function renderRandom()
-    {
     }
 }

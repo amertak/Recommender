@@ -11,5 +11,17 @@ use Nette,
  */
 abstract class BasePresenter extends Nette\Application\UI\Presenter
 {
+    /**
+     * @var \Nette\Database\Context
+     * @inject
+     */
+    public $database;
 
+
+    public function beforeRender()
+    {
+        $this->template->categories = $this->database->table("categories")->select("DISTINCT category");
+
+        parent::beforeRender();
+    }
 }
