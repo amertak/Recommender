@@ -39,4 +39,17 @@ def query(sql):
 	except mysql.connector.Error as err:
 		print(err)
 		return {}
+
+def insert(sql):
+	try:
+		global cnx, cursor
+		if cursor is None:
+			cursor = cnx.cursor()
+
+		cursor.execute(sql)
+		cnx.commit()
+		return cursor
+	except mysql.connector.Error as err:
+		print(err)
+
 	
