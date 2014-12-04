@@ -1,0 +1,15 @@
+
+{foreach $quotes as $quote}
+    <div class="well">
+        <a href="/quote/{$quote->id}">#{$quote->id}</a>
+        <input type="number" class="rating" min=0 max=100 step=1 data-show-caption="false" data-show-clear="false" data-size="xs" data-readonly="true" value="{$quote->score}">
+        <br />
+        <br />
+        <p>{$quote->text|noescape}</p>
+        <p>{$quote->comment|noescape}</p>
+        {foreach $quote->tags as $tag}
+            <span class="label label-primary">{$tag}</span>
+        {/foreach}
+    </div>
+    <br />
+{/foreach}

@@ -6,9 +6,9 @@ use Nette,
 	App\Model;
 
 /**
- * Homepage presenter.
+ * Home presenter.
  */
-class HomepagePresenter extends BasePresenter
+class HomePresenter extends BasePresenter
 {
     /** @var Nette\Database\Context */
     private $database;
@@ -22,13 +22,23 @@ class HomepagePresenter extends BasePresenter
 
 	public function renderDefault()
 	{
-        $quotes = $this->database->table('quotes')->order('RAND()')->limit(1);
+        $quotes_db = $this->database->table('quotes')->order('RAND()')->limit(3);
 
-        foreach ($quotes as $quote)
+        $quotes = [];
+
+        foreach ($quotes_db as $quote_db)
         {
-            $this->template->text = $this->prepareText($quote->text);
-            $this->template->quote = $quote;
+            $quote = new \Quote();
+            $quote->text = $this->prepareText($quote_db->text);
+            $quote->comment = $quote_db->comment;
+            $quote->tags = ['Tag1', 'Tag2'];
+            $quote->id = $quote_db->id;
+            $quote->score = $quote_db->score;
+
+            array_push($quotes, $quote);
         }
+
+        $this->template->quotes = $quotes;
 	}
 
     private function prepareText($text)
@@ -42,7 +52,7 @@ class HomepagePresenter extends BasePresenter
 
             foreach ($matches as $match)
             {
-                $text = preg_replace('/&lt;(' . preg_quote($match) . ')&gt;/', '&lt;<font color="' . $this->colors[$count % count($this->colors)] . '">$1</font>&gt;', $text);
+                $text = preg_replace('/&lt;(' . preg_quote($match, '/') . ')&gt;/', '&lt;<font color="' . $this->colors[$count % count($this->colors)] . '">$1</font>&gt;', $text);
                 $count++;
             }
         }
@@ -50,8 +60,7 @@ class HomepagePresenter extends BasePresenter
         return $text;
     }
 
-    public function renderTest()
+    public function renderRandom()
     {
-        $this->redirect('default');
     }
 }
