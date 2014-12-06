@@ -41,7 +41,7 @@ class HomePresenter extends BasePresenter
         $this->template->quotes = $this->prepareQuotesToRender($quotes_db);
 	}
 
-    public function prepareQuotesToRender($quotesFromDB)
+    private function prepareQuotesToRender($quotesFromDB)
     {
         $quotes = [];
         foreach ($quotesFromDB as $quote_db)
@@ -69,12 +69,13 @@ class HomePresenter extends BasePresenter
 
     public function renderRateup($id)
     {
+        $this->rateQuote($id, 10);
         $this->redirect('Home:default', $this->getRecommendedQuote($id));
     }
 
     private function getRecommendedQuote($id)
     {
-        $user = 'asdasasd';
+        $user = $this->userName;
 
         return $this->database->query("
             select b.quote from (
@@ -94,7 +95,34 @@ class HomePresenter extends BasePresenter
 
     public function renderRatedown($id)
     {
-        $this->redirect('Home:default', $this->redirect('Home:default', $this->getRecommendedQuote($id)));
+        $this->rateQuote($id, -10);
+        $this->redirect('Home:default');
+    }
+
+    private function rateQuote($quoteID, $score)
+    {
+        $user = $this->userName;
+
+        $row = $this->database->table("ratings")->select("id")->where("user", $user)->where("quote", $quoteID)->fetch();
+
+        if (isset($row->id))
+        {
+            return;
+        }
+
+        $this->database->table("ratings")->insert(array('user' => $user,'quote' => $quoteID,'value' => $score));
+
+        if ($score > 0)
+        {
+            $this->database->query("UPDATE quotes SET infavor = infavor + $score WHERE id = $quoteID");
+        }
+        else
+        {
+            $this->database->query("UPDATE quotes SET against = against + " . abs($score) . " WHERE id = $quoteID");
+        }
+
+        $this->database->query("UPDATE quotes SET score = infavor / (infavor + against) * 100 WHERE id = $quoteID");
+        $this->database->query("UPDATE quotes SET tscore = score - 10000*(1 / ( 1 + infavor + against)) WHERE id = $quoteID");
     }
 
     private function prepareText($text)
