@@ -18,19 +18,33 @@ class HomePresenter extends BasePresenter
     }
 
 
+    public function renderCategory($id)
+    {
+        $this->setView("default");
+
+        $quotes_db = $this->database->query("SELECT quotes.text, quotes.id, quotes.comment, quotes.tscore From quotes join categories on quotes.id = categories.quote where category = '$id' order by rand() limit 3");
+        $this->template->quotes = $this->prepareQuotesToRender($quotes_db);
+    }
+
+
 	public function renderDefault($id)
 	{
         if (isset($id) && intval($id) > 0)
         {
-            $quotes_db = $this->database->table('quotes')->where("id", $id)->limit(1);
+            $quotes_db = $this->database->table('quotes')->where("id", $id);
         }
         else
         {
             $quotes_db = $this->database->table('quotes')->order('RAND()')->limit(1);
         }
-        $quotes = [];
 
-        foreach ($quotes_db as $quote_db)
+        $this->template->quotes = $this->prepareQuotesToRender($quotes_db);
+	}
+
+    public function prepareQuotesToRender($quotesFromDB)
+    {
+        $quotes = [];
+        foreach ($quotesFromDB as $quote_db)
         {
             $categories = [];
             $categories_db = $this->database->table('categories')->where('quote', $quote_db->id);
@@ -50,12 +64,17 @@ class HomePresenter extends BasePresenter
             array_push($quotes, $quote);
         }
 
-        $this->template->quotes = $quotes;
-	}
+        return $quotes;
+    }
 
     public function renderRateup($id)
     {
-        $recommended = $this->database->query("
+        $this->redirect('Home:default', $this->getRecommendedQuote($id));
+    }
+
+    private function getRecommendedQuote($id)
+    {
+        return $this->database->query("
             select a.quote from (
             select quote
             from ratings
@@ -67,13 +86,11 @@ class HomePresenter extends BasePresenter
             limit 50) as a
             order by RAND()
             limit 1")->fetch()->quote;
-
-        $this->redirect('Home:default', $recommended);
     }
 
     public function renderRatedown($id)
     {
-        $this->redirect('Home:default');
+        $this->redirect('Home:default', $this->redirect('Home:default', $this->getRecommendedQuote($id)));
     }
 
     private function prepareText($text)
