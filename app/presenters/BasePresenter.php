@@ -56,13 +56,27 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
         if (!isset($cookies["recommender"]))
         {
             $this->userName = sha1($this->getGUID());
-
             $this->response->setCookie("recommender", $this->userName, time() + (10 * 365 * 24 * 60 * 60));
         }
         else
         {
-            $this->userName = trim($cookies["recommender"], "{}");
+            $val = trim($cookies["recommender"], "{}");
+
+            if ($this->is_sha1($val))
+            {
+                $this->userName = $val;
+            }
+            else
+            {
+                $this->userName = sha1($this->getGUID());
+                $this->response->setCookie("recommender", $this->userName, time() + (10 * 365 * 24 * 60 * 60));
+            }
         }
+    }
+
+    private function is_sha1($str)
+    {
+        return (bool) preg_match('/^[0-9a-f]{40}$/i', $str);
     }
 
     private function getGUID()

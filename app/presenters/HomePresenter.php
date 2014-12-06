@@ -84,7 +84,6 @@ class HomePresenter extends BasePresenter
             where user in (select user from ratings where quote = $id and value > 0)
                 and value > 0
                 and quote <> $id
-                and user <> '$user'
             group by quote
             order by count(quote) desc
             ) as b where quote not in (select quote from ratings where user = '$user')
