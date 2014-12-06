@@ -74,16 +74,20 @@ class HomePresenter extends BasePresenter
 
     private function getRecommendedQuote($id)
     {
+        $user = 'asdasasd';
+
         return $this->database->query("
-            select a.quote from (
-            select quote
+            select b.quote from (
+            select quote from (select quote
             from ratings
             where user in (select user from ratings where quote = $id and value > 0)
                 and value > 0
                 and quote <> $id
+                and user <> '$user'
             group by quote
             order by count(quote) desc
-            limit 50) as a
+            ) as b where quote not in (select quote from ratings where user = '$user')
+            limit 50) as b
             order by RAND()
             limit 1")->fetch()->quote;
     }

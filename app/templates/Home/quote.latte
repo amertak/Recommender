@@ -9,7 +9,7 @@
         <p>{$quote->text|noescape}</p>
         <p>{$quote->comment|noescape}</p>
         {foreach $quote->categories as $category}
-            <a class="label label-primary" href="/category/{$category}">{$category}</a>
+            <a class="label label-primary" href="/home/category/{$category}">{$category}</a>
         {/foreach}
     </div>
     <br />
