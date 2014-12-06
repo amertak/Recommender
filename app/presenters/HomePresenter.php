@@ -59,9 +59,9 @@ class HomePresenter extends BasePresenter
             select a.quote from (
             select quote
             from ratings
-            where user in (select user from ratings where quote = 1 and value > 0)
+            where user in (select user from ratings where quote = $id and value > 0)
                 and value > 0
-                and quote <> 1
+                and quote <> $id
             group by quote
             order by count(quote) desc
             limit 50) as a
