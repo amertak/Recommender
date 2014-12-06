@@ -18,9 +18,16 @@ class HomePresenter extends BasePresenter
     }
 
 
-	public function renderDefault()
+	public function renderDefault($id)
 	{
-        $quotes_db = $this->database->table('quotes')->order('RAND()')->limit(1);
+        if (isset($id) && intval($id) > 0)
+        {
+            $quotes_db = $this->database->table('quotes')->where("id", $id)->limit(1);
+        }
+        else
+        {
+            $quotes_db = $this->database->table('quotes')->order('RAND()')->limit(1);
+        }
         $quotes = [];
 
         foreach ($quotes_db as $quote_db)
@@ -45,6 +52,29 @@ class HomePresenter extends BasePresenter
 
         $this->template->quotes = $quotes;
 	}
+
+    public function renderRateup($id)
+    {
+        $recommended = $this->database->query("
+            select a.quote from (
+            select quote
+            from ratings
+            where user in (select user from ratings where quote = 1 and value > 0)
+                and value > 0
+                and quote <> 1
+            group by quote
+            order by count(quote) desc
+            limit 50) as a
+            order by RAND()
+            limit 1")->fetch()->quote;
+
+        $this->redirect('Home:default', $recommended);
+    }
+
+    public function renderRatedown($id)
+    {
+        $this->redirect('Home:default');
+    }
 
     private function prepareText($text)
     {

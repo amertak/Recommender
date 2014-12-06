@@ -16,8 +16,7 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
      * @inject
      */
     public $database;
-
-
+    
     public function beforeRender()
     {
         $this->template->categories = $this->database->table("categories")->select("DISTINCT category");

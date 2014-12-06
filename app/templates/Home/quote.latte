@@ -1,7 +1,9 @@
 {foreach $quotes as $quote}
     <div class="well">
-        <a href="/quote/{$quote->id}">#{$quote->id}</a>
+        <a style="margin-right: 15px;" href="/quote/{$quote->id}">#{$quote->id}</a>
+        <a class="glyphicon glyphicon-minus-sign" aria-hidden="true" style="font-size: 16px;" href="/home/ratedown/{$quote->id}"></a>
         <input type="number" class="rating" min=0 max=100 step=1 data-show-caption="false" data-show-clear="false" data-size="xs" data-readonly="true" value="{$quote->score}">
+        <a class="glyphicon glyphicon-plus-sign" aria-hidden="true" style="font-size: 16px;" href="/home/rateup/{$quote->id}"></a>
         <br />
         <br />
         <p>{$quote->text|noescape}</p>
