@@ -8,9 +8,9 @@ cursor = None
 def open_connection():
 	try:
 		global cnx
-		cnx = mysql.connector.connect(user = 'cibula', password = 'cibula', host = '192.168.1.100', database = 'recommender_db')
+		cnx = mysql.connector.connect(user = '*', password = '*', host = '*', database = 'recommender_db')
 
-		print("I AM CONNECTED BITCHES")
+		print("It would appear that a connection has been established, my fellow countrymen")
 
 	except mysql.connector.Error as err:
 		if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
